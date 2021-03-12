@@ -25,7 +25,8 @@ public class CreviceProject {
 
 	private CreviceApp app;
 
-	private String systemPath;
+	private String dataPath;
+	private String outputPath;
 
 	private List<ProjectStage> stages;
 	private int lastStageId;
@@ -38,7 +39,8 @@ public class CreviceProject {
 	public CreviceProject(CreviceApp _app) {
 		app = _app;
 
-		systemPath = "data/";
+		dataPath = "data/";
+		outputPath = "output/";
 
 		stages = new ArrayList<ProjectStage>();
 		lastStageId = -1;
@@ -58,7 +60,7 @@ public class CreviceProject {
 
 	public void load() {
 		try {
-			surface.setImage(ImageIO.read(new File(systemPath+"surface.png")));
+			surface.setImage(ImageIO.read(new File(dataPath+"surface.png")));
 			app.stageChanged(surface);
 		} catch(IOException e) {
 			e.printStackTrace();
@@ -90,7 +92,7 @@ public class CreviceProject {
 		toMap.put("lines", linesObj);
 
 		try {
-			mapper.writeValue(new File(systemPath+"lines.json"), toMap);
+			mapper.writeValue(new File(outputPath+"lines.json"), toMap);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -153,7 +155,7 @@ public class CreviceProject {
 		toMap.put("edges", edgesObj);
 
 		try {
-			mapper.writeValue(new File(systemPath+"network.json"), toMap);
+			mapper.writeValue(new File(outputPath+"network.json"), toMap);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -207,7 +209,7 @@ public class CreviceProject {
 		toMap.put("childrenMap", childrenMapObj);
 
 		try {
-			mapper.writeValue(new File(systemPath+"skeleton.json"), toMap);
+			mapper.writeValue(new File(outputPath+"skeleton.json"), toMap);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
