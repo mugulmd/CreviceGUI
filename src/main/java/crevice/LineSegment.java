@@ -30,22 +30,25 @@ public class LineSegment extends AbstractSegment {
 		return direction();
 	}
 
-	public Vec2D project(Vec2D v) {
-		Vec2D vDir = direction();
-		double t = Vec2D.dot(vDir, Vec2D.sub(v, vStart));
-		return vecAt(t);
-	} 
+	@Override
+	public LineSegment applyCam(Camera cam) {
+		return new LineSegment(cam.applyTo(vStart), cam.applyTo(vEnd));
+	}
+
+	@Override
+	public LineSegment applyCamInv(Camera cam) {
+		return new LineSegment(cam.applyInvTo(vStart), cam.applyInvTo(vEnd));
+	}
 
 	@Override
 	public Shape shape() {
 		return new Line2D.Double(vStart.getX(), vStart.getY(), vEnd.getX(), vEnd.getY());
 	}
 
-	@Override
-	public Shape shape(Camera cam) {
-		Vec2D u = cam.applyTo(vStart);
-		Vec2D v = cam.applyTo(vEnd);
-		return new Line2D.Double(u.getX(), u.getY(), v.getX(), v.getY());
-	}
+	public Vec2D project(Vec2D v) {
+		Vec2D vDir = Vec2D.sub(vEnd, vStart);
+		double t = Vec2D.dot(vDir, Vec2D.sub(v, vStart))/(vDir.norm()*vDir.norm());
+		return vecAt(t);
+	} 
 
 }

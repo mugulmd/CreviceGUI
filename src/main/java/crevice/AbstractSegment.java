@@ -29,8 +29,10 @@ public abstract class AbstractSegment {
 
 	abstract public Vec2D dirAt(double t);
 
-	abstract public Shape shape();
+	abstract public AbstractSegment applyCam(Camera cam);
 
-	abstract public Shape shape(Camera cam);
+	abstract public AbstractSegment applyCamInv(Camera cam);
+
+	abstract public Shape shape();
 
 }

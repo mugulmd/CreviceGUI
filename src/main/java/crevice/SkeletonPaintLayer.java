@@ -49,7 +49,7 @@ public class SkeletonPaintLayer extends JPanel {
 				while(!queue.isEmpty()) {
 					Edge e = queue.poll();
 					if(!skeleton.filter(e)) continue;
-					g2d.draw(e.getSegment().shape(cam));
+					g2d.draw(e.getSegment().applyCam(cam).shape());
 					Iterator<Edge> childrenIt = skeleton.childrenIterator(e);
 					while(childrenIt.hasNext()) {
 						Edge c = childrenIt.next();
@@ -60,11 +60,11 @@ public class SkeletonPaintLayer extends JPanel {
 				Iterator<ParabolaEdge> edgeIt = skeleton.getRootNode().edgeIterator();
 				while(edgeIt.hasNext()) {
 					Edge e = edgeIt.next();
-					g2d.draw(e.getSegment().shape(cam));
+					g2d.draw(e.getSegment().applyCam(cam).shape());
 				}
 
 				g2d.setColor(Color.RED);
-				g2d.draw(skeleton.getRootEdge().getSegment().shape(cam));
+				g2d.draw(skeleton.getRootEdge().getSegment().applyCam(cam).shape());
 			}
 		}
 	}

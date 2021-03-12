@@ -32,6 +32,10 @@ public class LineSet implements ProjectStage {
 		lines.add(line);
 	}
 
+	public void removeLine(LineSegment line) {
+		lines.remove(line);
+	}
+
 	public Iterator<LineSegment> lineIterator() {
 		return lines.iterator();
 	}

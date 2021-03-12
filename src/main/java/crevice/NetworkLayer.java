@@ -45,7 +45,7 @@ public class NetworkLayer extends JPanel {
 		while(it.hasNext()) {
 			Edge e = it.next();
 			if(net.filter(e)) {
-				g2d.draw(e.getSegment().shape(cam));
+				g2d.draw(e.getSegment().applyCam(cam).shape());
 			}
 		}
 	}

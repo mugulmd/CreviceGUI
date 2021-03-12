@@ -37,16 +37,18 @@ public class ParabolaSegment extends AbstractSegment {
 	}
 
 	@Override
-	public Shape shape() {
-		return new QuadCurve2D.Double(vStart.getX(), vStart.getY(), vMid.getX(), vMid.getY(), vEnd.getX(), vEnd.getY());
+	public ParabolaSegment applyCam(Camera cam) {
+		return new ParabolaSegment(cam.applyTo(vStart), cam.applyTo(vMid), cam.applyTo(vEnd));
 	}
 
 	@Override
-	public Shape shape(Camera cam) {
-		Vec2D u = cam.applyTo(vStart);
-		Vec2D v = cam.applyTo(vMid);
-		Vec2D w = cam.applyTo(vEnd);
-		return new QuadCurve2D.Double(u.getX(), u.getY(), v.getX(), v.getY(), w.getX(), w.getY());
+	public ParabolaSegment applyCamInv(Camera cam) {
+		return new ParabolaSegment(cam.applyInvTo(vStart), cam.applyInvTo(vMid), cam.applyInvTo(vEnd));
+	}
+
+	@Override
+	public Shape shape() {
+		return new QuadCurve2D.Double(vStart.getX(), vStart.getY(), vMid.getX(), vMid.getY(), vEnd.getX(), vEnd.getY());
 	}
 
 	public double supportTriangleArea() {

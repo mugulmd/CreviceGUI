@@ -1,8 +1,13 @@
 package crevice;
 
+import java.util.Iterator;
+
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.AbstractAction;
+import java.awt.event.ActionEvent;
+import javax.swing.Action;
 
 /**
  *
@@ -20,7 +25,7 @@ public class LineSetCtrl extends AbstractCtrl implements PaintedElement, Interac
 	boolean isDrawing;
 	LineSegment tmpLine;
 
-	private class MouseHandle extends MouseInputAdapter {
+	private class MouseAddHandle extends MouseInputAdapter {
 
 		private Vec2D vStart, vEnd;
 
@@ -45,9 +50,61 @@ public class LineSetCtrl extends AbstractCtrl implements PaintedElement, Interac
 		public void mouseReleased(MouseEvent e) {
 			isDrawing = false;
 			Camera cam = app.getCameraCtrl().getCamera();
-			lines.addLine(new LineSegment(cam.applyInvTo(vStart), cam.applyInvTo(vEnd)));
+			lines.addLine(tmpLine.applyCamInv(cam));
 			interactiveLayer.repaint();
 			paintLayer.repaint();
+		}
+	}
+
+	private class MouseRemoveHandle extends MouseInputAdapter {
+
+		private double epsilon = 10.;
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			app.stageChanged(lines);
+			Vec2D vMouse = new Vec2D(e.getX(), e.getY());
+			Camera cam = app.getCameraCtrl().getCamera();
+			Iterator<LineSegment> it = lines.lineIterator();
+			while(it.hasNext()) {
+				LineSegment seg = it.next();
+				Vec2D vProject = seg.applyCam(cam).project(vMouse);
+				if(Vec2D.dist(vMouse, vProject) < epsilon) {
+					lines.removeLine(seg);
+					break;
+				}  
+			}
+			paintLayer.repaint();
+		}
+	}
+
+	private MouseInputAdapter mouseAddHandle, mouseRemoveHandle;
+
+	private class SwitchAddAction extends AbstractAction {
+
+		public SwitchAddAction() {
+			super("Add lines");
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			interactiveLayer.removeMouseListener(mouseRemoveHandle);
+			interactiveLayer.addMouseListener(mouseAddHandle);
+			interactiveLayer.addMouseMotionListener(mouseAddHandle);
+		}
+	}
+
+	private class SwitchRemoveAction extends AbstractAction {
+
+		public SwitchRemoveAction() {
+			super("Remove lines");
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			interactiveLayer.removeMouseListener(mouseAddHandle);
+			interactiveLayer.removeMouseMotionListener(mouseAddHandle);
+			interactiveLayer.addMouseListener(mouseRemoveHandle);
 		}
 	}
 
@@ -60,9 +117,12 @@ public class LineSetCtrl extends AbstractCtrl implements PaintedElement, Interac
 		paintLayer = new LineSetPaintLayer(this);
 
 		interactiveLayer = new LineSetInteractiveLayer(this);
-		MouseHandle mouseHandle = new MouseHandle();
-		interactiveLayer.addMouseListener(mouseHandle);
-		interactiveLayer.addMouseMotionListener(mouseHandle);
+
+		mouseAddHandle = new MouseAddHandle();
+		mouseRemoveHandle = new MouseRemoveHandle();
+
+		interactiveLayer.addMouseListener(mouseAddHandle);
+		interactiveLayer.addMouseMotionListener(mouseAddHandle);
 
 		isDrawing = false;
 	}
@@ -76,8 +136,6 @@ public class LineSetCtrl extends AbstractCtrl implements PaintedElement, Interac
 		return modelPane;
 	}
 
-	// TODO
-
 	@Override
 	public JPanel getPaintLayer() {
 		return paintLayer;
@@ -86,6 +144,14 @@ public class LineSetCtrl extends AbstractCtrl implements PaintedElement, Interac
 	@Override
 	public JPanel getInteractiveLayer() {
 		return interactiveLayer;
+	}
+
+	public Action createSwitchAddAction() {
+		return new SwitchAddAction();
+	}
+
+	public Action createSwitchRemoveAction() {
+		return new SwitchRemoveAction();
 	}
 
 }

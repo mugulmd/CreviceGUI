@@ -44,7 +44,7 @@ public class LineSetPaintLayer extends JPanel {
 
 		while(it.hasNext()) {
 			LineSegment line = it.next();
-			g2d.draw(line.shape(cam));
+			g2d.draw(line.applyCam(cam).shape());
 		}
 	}
 
