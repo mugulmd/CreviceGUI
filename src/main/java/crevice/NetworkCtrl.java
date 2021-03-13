@@ -19,6 +19,14 @@ public class NetworkCtrl extends AbstractCtrl implements PaintedElement {
 	private NetworkModelingPane modelPane;
 	private NetworkLayer layer;
 
+	private class SliderOffsetHandle implements ChangeListener {
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			net.setSamplingOffset((double)modelPane.getSliderOffset().getValue()/200);
+			modelPane.getFieldOffset().setText(String.valueOf(net.getSamplingOffset()));
+		}
+	}
+
 	private class BuildAction extends AbstractAction {
 
 		public BuildAction() {
@@ -30,6 +38,16 @@ public class NetworkCtrl extends AbstractCtrl implements PaintedElement {
 			app.stageChanged(net);
 			LineSet lineSet = app.getProject().getLines();
 			net.build(lineSet);
+			layer.repaint();
+		}
+	}
+
+	private class SliderLengthHandle implements ChangeListener {
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			app.stageChanged(net);
+			net.setMaxLength(modelPane.getSliderLength().getValue());
+			modelPane.getFieldLength().setText(String.valueOf(net.getMaxLength()));
 			layer.repaint();
 		}
 	}
@@ -60,6 +78,8 @@ public class NetworkCtrl extends AbstractCtrl implements PaintedElement {
 		net = _net;
 
 		modelPane = new NetworkModelingPane(this);
+		modelPane.getSliderOffset().addChangeListener(new SliderOffsetHandle());
+		modelPane.getSliderLength().addChangeListener(new SliderLengthHandle());
 		modelPane.getSliderAffineWeight().addChangeListener(new SliderAffineWeightHandle());
 		modelPane.getSliderSupportAngle().addChangeListener(new SliderSupportAngleHandle());
 

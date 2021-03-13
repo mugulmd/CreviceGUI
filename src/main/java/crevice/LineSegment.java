@@ -45,6 +45,21 @@ public class LineSegment extends AbstractSegment {
 		return new Line2D.Double(vStart.getX(), vStart.getY(), vEnd.getX(), vEnd.getY());
 	}
 
+	@Override
+	public double length() {
+		return Vec2D.dist(vStart, vEnd);
+	}
+
+	@Override
+	public double affineWeight() {
+		return 0;
+	}
+
+	@Override
+	public double supportAngle() {
+		return Math.PI;
+	}
+
 	public Vec2D project(Vec2D v) {
 		Vec2D vDir = Vec2D.sub(vEnd, vStart);
 		double t = Vec2D.dot(vDir, Vec2D.sub(v, vStart))/(vDir.norm()*vDir.norm());

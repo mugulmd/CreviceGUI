@@ -51,6 +51,19 @@ public class ParabolaSegment extends AbstractSegment {
 		return new QuadCurve2D.Double(vStart.getX(), vStart.getY(), vMid.getX(), vMid.getY(), vEnd.getX(), vEnd.getY());
 	}
 
+	@Override
+	public double length() {
+		Vec2D b = Vec2D.sub(vMid, vStart);
+		Vec2D f = Vec2D.sub(vEnd, vMid);
+		Vec2D a = Vec2D.sub(f, b);
+
+		double l = Math.log(a.norm()*f.norm() + Vec2D.dot(a, f)) - Math.log(a.norm()*b.norm() + Vec2D.dot(a, b));
+		l *= (b.norm()*b.norm()/a.norm()) - (Vec2D.dot(a, b)*Vec2D.dot(a, b)/(a.norm()*a.norm()*a.norm()));
+		l += (f.norm()*Vec2D.dot(a, f) - b.norm()*Vec2D.dot(a, b))/(a.norm()*a.norm());
+
+		return l;
+	}
+
 	public double supportTriangleArea() {
 		double a = Vec2D.dist(vStart, vMid);
 		double b = Vec2D.dist(vMid, vEnd);
@@ -59,6 +72,12 @@ public class ParabolaSegment extends AbstractSegment {
 		return Math.sqrt(s*(s-a)*(s-b)*(s-c));
 	}
 
+	@Override
+	public double affineWeight() {
+		return Math.pow(supportTriangleArea(), 1./3.);
+	}
+
+	@Override
 	public double supportAngle() {
 		Vec2D v1 = Vec2D.sub(vStart, vMid); v1.normalize();
 		Vec2D v2 = Vec2D.sub(vEnd, vMid); v2.normalize();

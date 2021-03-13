@@ -19,6 +19,8 @@ public class Network implements ProjectStage {
 	private List<Edge> edges;
 	private int edgeCounter;
 
+	private double samplingOffset;
+	private double maxLength;
 	private double maxAffineWeight;
 	private double minSupportAngle;
  
@@ -28,6 +30,9 @@ public class Network implements ProjectStage {
 		nodeCounter = 0;
 		edges = new LinkedList<Edge>();
 		edgeCounter = 0;
+
+		samplingOffset = 0.1;
+		maxLength = 1000;
 		maxAffineWeight = 100;
 		minSupportAngle = 0;
 	}
@@ -46,6 +51,14 @@ public class Network implements ProjectStage {
 		edgeCounter = 0;
 	}
 
+	public void setSamplingOffset(double offset) {
+		samplingOffset = offset;
+	}
+
+	public double getSamplingOffset() {
+		return samplingOffset;
+	}
+
 	public void build(LineSet lineSet) {
 		clear();
 
@@ -53,8 +66,8 @@ public class Network implements ProjectStage {
 		while(it.hasNext()) {
 			LineSegment line = it.next();
 
-			Vec2D v1 = line.vecAt(0.2);
-			Vec2D v2 = line.vecAt(0.8);
+			Vec2D v1 = line.vecAt(samplingOffset);
+			Vec2D v2 = line.vecAt(1-samplingOffset);
 			Vec2D d1 = line.direction();
 			Vec2D d2 = Vec2D.mult(d1, -1);
 
@@ -119,6 +132,14 @@ public class Network implements ProjectStage {
 		return edges.iterator();
 	}
 
+	public void setMaxLength(double l) {
+		maxLength = l;
+	}
+
+	public double getMaxLength() {
+		return maxLength;
+	}
+
 	public void setMaxAffineWeight(double w) {
 		maxAffineWeight = w;
 	}
@@ -136,7 +157,7 @@ public class Network implements ProjectStage {
 	}
 
 	public boolean filter(Edge e) {
-		return (e.getAffineWeight() < maxAffineWeight) && (e.getSupportAngle() > minSupportAngle);
+		return (e.getSegment().length() < maxLength) && (e.getSegment().affineWeight() < maxAffineWeight) && (e.getSegment().supportAngle() > minSupportAngle);
 	} 
 
 }

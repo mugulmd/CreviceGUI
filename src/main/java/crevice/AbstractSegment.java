@@ -35,4 +35,10 @@ public abstract class AbstractSegment {
 
 	abstract public Shape shape();
 
+	abstract public double length();
+
+	abstract public double affineWeight();
+
+	abstract public double supportAngle();
+
 }
