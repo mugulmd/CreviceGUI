@@ -46,7 +46,7 @@ public class Skeleton implements ProjectStage {
 		maxDepth = Integer.MAX_VALUE;
 	}
 
-	private void clearChildren() {
+	public void clearChildren() {
 		if(complete) {
 			children = new HashMap<Integer, List<Edge>>();
 			depth = new HashMap<Integer, Integer>();
@@ -84,7 +84,7 @@ public class Skeleton implements ProjectStage {
 		return rootNode;
 	}
 
-	public Edge getRootEdge() {
+	public ParabolaEdge getRootEdge() {
 		return rootEdge;
 	}
 
@@ -93,6 +93,13 @@ public class Skeleton implements ProjectStage {
 
 		if(!rootEdgeIt.hasNext()) rootEdgeIt = rootNode.edgeIterator();
 		rootEdge = rootEdgeIt.next();
+	}
+
+	public void addChild(Edge parent, Edge child) {
+		if(!children.containsKey(parent.getId())) {
+			children.put(parent.getId(), new LinkedList<Edge>());
+		}
+		children.get(parent.getId()).add(child);
 	}
 
 	public Iterator<Edge> childrenIterator(Edge e) {
@@ -104,52 +111,20 @@ public class Skeleton implements ProjectStage {
 		}
 	}
 
-	public void explore(Network net) {
-		clearChildren();
+	public void setDepth(Edge e, int d) {
+		depth.put(e.getId(), d);
+	}
 
-		Queue<ParabolaEdge> queue = new LinkedList<ParabolaEdge>();
-		Set<Integer> seen = new HashSet<Integer>();
+	public int getDepth(Edge e) {
+		return depth.get(e.getId());
+	}
 
-		queue.add(rootEdge);
-		seen.add(rootEdge.getId());
-		depth.put(rootEdge.getId(), 0);
-
-		while(!queue.isEmpty()) {
-			ParabolaEdge e1 = queue.poll();
-
-			InNode n1 = e1.getTarget();
-			LineEdge e2 = n1.getEdge();
-			if(seen.contains(e2.getId())) continue;
-			seen.add(e2.getId());
-			depth.put(e2.getId(), depth.get(e1.getId())+1);
-
-			LinkedList<Edge> lst1 = new LinkedList<Edge>();
-			lst1.add(e2);
-			children.put(e1.getId(), lst1);
-
-			LinkedList<Edge> lst2 = new LinkedList<Edge>();
-			OutNode n2 = e2.getTarget();
-			Iterator<ParabolaEdge> edgeIt = n2.edgeIterator();
-			while(edgeIt.hasNext()) {
-				ParabolaEdge e3 = edgeIt.next();
-				if(seen.contains(e3.getId()) || !net.filter(e3)) continue;
-				queue.add(e3);
-				seen.add(e3.getId());
-				depth.put(e3.getId(), depth.get(e2.getId())+1);
-				lst2.add(e3);
-			}
-			children.put(e2.getId(), lst2);
-		}
-
+	public void setComplete() {
 		complete = true;
 	}
 
 	public boolean isComplete() {
 		return complete;
-	}
-
-	public int getDepth(Edge e) {
-		return depth.get(e.getId());
 	}
 
 	public void setMaxDepth(int d) {

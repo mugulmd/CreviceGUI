@@ -6,6 +6,8 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.Box;
 
 /**
  *
@@ -18,6 +20,7 @@ public class SkeletonModelingPane extends JPanel {
 	private SkeletonCtrl ctrl;
 
 	private JButton buttonChangeRootEdge;
+	private JComboBox listExplorer;
 	private JButton buttonExplore;
 	private JSlider sliderDepth;
 	private JTextField fieldDepth;
@@ -33,10 +36,23 @@ public class SkeletonModelingPane extends JPanel {
 		buttonChangeRootEdge = new JButton(ctrl.createChangeRootEdgeAction());
 		add(buttonChangeRootEdge);
 
+		buildExplorerPane();
+
 		buttonExplore = new JButton(ctrl.createExploreAction());
 		add(buttonExplore);
 
 		buildDepthPane();
+
+		add(Box.createVerticalGlue());
+	}
+
+	private void buildExplorerPane() {
+		JPanel panel = new JPanel();
+
+		listExplorer = new JComboBox();
+		panel.add(listExplorer);
+
+		add(panel);
 	}
 
 	private void buildDepthPane() {
@@ -54,6 +70,10 @@ public class SkeletonModelingPane extends JPanel {
 		panel.add(fieldDepth);
 
 		add(panel);
+	}
+
+	public JComboBox getListExplorer() {
+		return listExplorer;
 	}
 
 	public JSlider getSliderDepth() {

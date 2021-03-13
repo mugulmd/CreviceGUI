@@ -1,5 +1,7 @@
 package crevice;
 
+import java.util.Vector;
+
 import javax.swing.JPanel;
 import javax.swing.event.MouseInputAdapter;
 import java.awt.event.MouseEvent;
@@ -86,8 +88,8 @@ public class SkeletonCtrl extends AbstractCtrl implements PaintedElement, Intera
 		public void actionPerformed(ActionEvent e) {
 			if(skeleton.isConnected()) {
 				app.stageChanged(skeleton);
-				Network net = app.getProject().getNetwork();
-				skeleton.explore(net);
+				Explorer explorer = (Explorer) modelPane.getListExplorer().getSelectedItem();
+				explorer.explore();
 				paintLayer.repaint();
 			}
 		}
@@ -111,6 +113,15 @@ public class SkeletonCtrl extends AbstractCtrl implements PaintedElement, Intera
 
 		modelPane = new SkeletonModelingPane(this);
 		modelPane.getSliderDepth().addChangeListener(new SliderDepthHandle());
+
+		Vector<Explorer> explorers = new Vector<Explorer>();
+		explorers.add(new BFSExplorer());
+		explorers.add(new DFSExplorer());
+		explorers.add(new DijkstraExplorer());
+		for(Explorer explorer : explorers) {
+			explorer.setContext(app.getProject().getNetwork(), skeleton);
+			modelPane.getListExplorer().addItem(explorer);
+		}
 
 		paintLayer = new SkeletonPaintLayer(this);
 
