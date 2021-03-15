@@ -32,18 +32,23 @@ public class SkeletonModelingPane extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		add(new JLabel("Skeleton"));
+		add(Box.createVerticalStrut(50));
 
 		buttonChangeRootEdge = new JButton(ctrl.createChangeRootEdgeAction());
 		add(buttonChangeRootEdge);
+		add(Box.createVerticalStrut(10));
 
 		buildExplorerPane();
+		add(Box.createVerticalStrut(10));
 
 		buttonExplore = new JButton(ctrl.createExploreAction());
 		add(buttonExplore);
+		add(Box.createVerticalStrut(10));
 
 		buildDepthPane();
+		add(Box.createVerticalStrut(10));
 
-		add(Box.createVerticalGlue());
+		add(Box.createVerticalStrut((int)ctrl.getApp().getWindowDim().getHeight()));
 	}
 
 	private void buildExplorerPane() {

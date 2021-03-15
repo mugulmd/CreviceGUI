@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import javax.swing.BoxLayout;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.Box;
 
 /**
  *
@@ -24,8 +25,13 @@ public class CameraModelingPane extends JPanel {
 		ctrl = _ctrl;
 
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
 		add(new JLabel("Camera"));
+		add(Box.createVerticalStrut(50));
+
 		buildZoomPane();
+
+		add(Box.createVerticalStrut((int)ctrl.getApp().getWindowDim().getHeight()));
 	}
 
 	private void buildZoomPane() {

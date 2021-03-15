@@ -6,6 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.Box;
 
 /**
  *
@@ -34,15 +35,21 @@ public class NetworkModelingPane extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		add(new JLabel("Affine connexion network"));
+		add(Box.createVerticalStrut(50));
 
 		buildOffsetPane();
+		add(Box.createVerticalStrut(10));
 
 		buttonBuild = new JButton(_ctrl.createBuildAction());
 		add(buttonBuild);
+		add(Box.createVerticalStrut(10));
 
 		buildLengthPane();
+		add(Box.createVerticalStrut(10));
 		buildAffineWeightPane();
+		add(Box.createVerticalStrut(10));
 		buildSupportAnglePane();
+		add(Box.createVerticalStrut((int)ctrl.getApp().getWindowDim().getHeight()));
 	}
 
 	private void buildOffsetPane() {

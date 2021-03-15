@@ -5,6 +5,7 @@ import javax.swing.JSlider;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.Box;
 
 /**
  *
@@ -24,8 +25,13 @@ public class BackgroundModelingPane extends JPanel {
 		ctrl = _ctrl;
 
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
 		add(new JLabel("Background"));
+		add(Box.createVerticalStrut(50));
+
 		buildBrightnessPane();
+
+		add(Box.createVerticalStrut((int)ctrl.getApp().getWindowDim().getHeight()));
 	}
 
 	private void buildBrightnessPane() {
