@@ -17,6 +17,7 @@ public class CreviceApp implements Runnable {
 	private ModelingMode mode;
 	private CreviceWindow window;
 
+	private SystemManager sysManager;
 	private CreviceProject project;
 	private ProjSurfaceCtrl surfaceCtrl;
 	private LineSetCtrl linesCtrl;
@@ -30,6 +31,7 @@ public class CreviceApp implements Runnable {
 		camCtrl = new CameraCtrl(this, new Camera());
 		mode = ModelingMode.BACKGROUND;
 
+		sysManager = new SystemManager();
 		project = new CreviceProject(this);
 		surfaceCtrl = new ProjSurfaceCtrl(this, project.getSurface());
 		linesCtrl = new LineSetCtrl(this, project.getLines());
@@ -78,6 +80,10 @@ public class CreviceApp implements Runnable {
 		if (!mode.equals(_mode)) {
 			mode = _mode;
 		}
+	}
+
+	public SystemManager getSysManager() {
+		return sysManager;
 	}
 
 	public CreviceProject getProject() {

@@ -19,8 +19,14 @@ public class CreviceMenuBar extends JMenuBar {
 
 		JMenu menuProject = new JMenu("Project");
 
+		JMenuItem itemChooseSurface = new JMenuItem(_window.createChooseSurfaceAction());
+		menuProject.add(itemChooseSurface);
+
 		JMenuItem itemLoad = new JMenuItem(_window.createLoadProjectAction());
 		menuProject.add(itemLoad);
+
+		JMenuItem itemChooseOutput = new JMenuItem(_window.createChooseOutputAction());
+		menuProject.add(itemChooseOutput);
 
 		JMenuItem itemSave = new JMenuItem(_window.createSaveProjectAction());
 		menuProject.add(itemSave);

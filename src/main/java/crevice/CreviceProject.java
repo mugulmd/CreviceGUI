@@ -25,9 +25,6 @@ public class CreviceProject {
 
 	private CreviceApp app;
 
-	private String dataPath;
-	private String outputPath;
-
 	private List<ProjectStage> stages;
 	private int lastStageId;
 
@@ -38,9 +35,6 @@ public class CreviceProject {
 
 	public CreviceProject(CreviceApp _app) {
 		app = _app;
-
-		dataPath = "data/";
-		outputPath = "output/";
 
 		stages = new ArrayList<ProjectStage>();
 		lastStageId = -1;
@@ -60,21 +54,31 @@ public class CreviceProject {
 
 	public void load() {
 		try {
-			surface.setImage(ImageIO.read(new File(dataPath+"surface.png")));
-			app.stageChanged(surface);
+			File f = app.getSysManager().getSurfaceFile();
+			if(f != null) {
+				surface.setImage(ImageIO.read(f));
+				app.stageChanged(surface);
+			} else {
+				System.out.println("No surface file found");
+			}
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void save() {
-		saveLines();
-		saveNetwork();
-		saveSkeleton();
-		System.out.println("Project saved");
+		File f = app.getSysManager().getOutputDir();
+		if(f != null) {
+			saveLines(new File(f.getAbsolutePath() + File.separator + "lines.json"));
+			saveNetwork(new File(f.getAbsolutePath() + File.separator + "network.json"));
+			saveSkeleton(new File(f.getAbsolutePath() + File.separator + "skeleton.json"));
+			System.out.println("Project saved");
+		} else {
+			System.out.println("No output directory found");
+		}
 	}
 
-	private void saveLines() {
+	private void saveLines(File f) {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> toMap = new HashMap<String, Object>();
 
@@ -92,13 +96,13 @@ public class CreviceProject {
 		toMap.put("lines", linesObj);
 
 		try {
-			mapper.writeValue(new File(outputPath+"lines.json"), toMap);
+			mapper.writeValue(f, toMap);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void saveNetwork() {
+	private void saveNetwork(File f) {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> toMap = new HashMap<String, Object>();
 
@@ -155,13 +159,13 @@ public class CreviceProject {
 		toMap.put("edges", edgesObj);
 
 		try {
-			mapper.writeValue(new File(outputPath+"network.json"), toMap);
+			mapper.writeValue(f, toMap);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void saveSkeleton() {
+	private void saveSkeleton(File f) {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> toMap = new HashMap<String, Object>();
 
@@ -209,7 +213,7 @@ public class CreviceProject {
 		toMap.put("childrenMap", childrenMapObj);
 
 		try {
-			mapper.writeValue(new File(outputPath+"skeleton.json"), toMap);
+			mapper.writeValue(f, toMap);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}

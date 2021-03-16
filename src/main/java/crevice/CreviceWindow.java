@@ -9,6 +9,7 @@ import javax.swing.Action;
 import javax.swing.AbstractAction;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -43,6 +44,26 @@ public class CreviceWindow extends JFrame {
 		}
 	}
 
+	private class ChooseSurfaceAction extends AbstractAction {
+
+		private CreviceWindow window;
+
+		public ChooseSurfaceAction(CreviceWindow _window) {
+			super("Choose surface");
+			window = _window;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser surfaceChooser = app.getSysManager().getSurfaceChooser();
+			int result = surfaceChooser.showOpenDialog(window);
+			if(result == JFileChooser.APPROVE_OPTION) {
+				app.getSysManager().setSurfaceFile(surfaceChooser.getSelectedFile());
+				app.getSysManager().saveConfig();
+			}
+		}
+	}
+
 	private class LoadProjectAction extends AbstractAction {
 
 		public LoadProjectAction() {
@@ -54,6 +75,26 @@ public class CreviceWindow extends JFrame {
 			app.getProject().load();
 			canvas.repaint();
 		} 
+	}
+
+	private class ChooseOutputAction extends AbstractAction {
+
+		private CreviceWindow window;
+
+		public ChooseOutputAction(CreviceWindow _window) {
+			super("Choose output directory");
+			window = _window;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JFileChooser outputChooser = app.getSysManager().getOutputChooser();
+			int result = outputChooser.showOpenDialog(window);
+			if(result == JFileChooser.APPROVE_OPTION) {
+				app.getSysManager().setOutputDir(outputChooser.getSelectedFile());
+				app.getSysManager().saveConfig();
+			}
+		}
 	}
 
 	private class SaveProjectAction extends AbstractAction {
@@ -122,8 +163,16 @@ public class CreviceWindow extends JFrame {
 		return action;
 	}
 
+	public Action createChooseSurfaceAction() {
+		return new ChooseSurfaceAction(this);
+	}
+
 	public Action createLoadProjectAction() {
 		return new LoadProjectAction();
+	}
+
+	public Action createChooseOutputAction() {
+		return new ChooseOutputAction(this);
 	}
 
 	public Action createSaveProjectAction() {
