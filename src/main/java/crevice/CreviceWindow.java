@@ -60,6 +60,8 @@ public class CreviceWindow extends JFrame {
 			if(result == JFileChooser.APPROVE_OPTION) {
 				app.getSysManager().setSurfaceFile(surfaceChooser.getSelectedFile());
 				app.getSysManager().saveConfig();
+				app.getProject().load();
+				canvas.repaint();
 			}
 		}
 	}
